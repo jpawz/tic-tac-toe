@@ -1,5 +1,5 @@
 const gameBoard = (() => {
-  const board = [
+  let board = [
     ["", "", ""],
     ["", "", ""],
     ["", "", ""],
@@ -12,6 +12,14 @@ const gameBoard = (() => {
 
   const getBoard = () => {
     return board;
+  };
+
+  const resetBoard = () => {
+    board = [
+      ["", "", ""],
+      ["", "", ""],
+      ["", "", ""],
+    ];
   };
 
   const placeMark = (x, y) => {
@@ -88,6 +96,7 @@ const gameBoard = (() => {
 
   return {
     getBoard,
+    resetBoard,
     placeMark,
     getWinner,
   };
@@ -108,18 +117,32 @@ const displayController = (() => {
     );
   }
 
+  function clearGrid() {
+    grid.forEach((row) =>
+      row.forEach((cell) => {
+        cell.innerText = "";
+      })
+    );
+  }
+
   grid.forEach((row, rowIndex) =>
     row.forEach((cell, colIndex) =>
       cell.addEventListener("click", () => {
         gameBoard.placeMark(rowIndex, colIndex);
         updateGrid();
-        if(gameBoard.getWinner() == "x") {
+        if (gameBoard.getWinner() == "x") {
           alert("X - win!");
         }
-        if(gameBoard.getWinner() == "o") {
+        if (gameBoard.getWinner() == "o") {
           alert("O - win!");
         }
       })
     )
   );
+
+  const startButton = document.getElementsByClassName("start")[0];
+  startButton.addEventListener("click", () => {
+    gameBoard.resetBoard();
+    clearGrid();
+  });
 })();
