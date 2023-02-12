@@ -121,11 +121,10 @@ const Player = (mark) => {
   return { getMark, getScore, updateScore };
 };
 
-const playerO = Player("o");
-const playerX = Player("x");
-
 const displayController = (() => {
   const grid = [[], [], []];
+  const oScore = document.getElementsByClassName("oScore")[0];
+  const xScore = document.getElementsByClassName("xScore")[0];
 
   const rows = [...document.getElementsByTagName("tr")];
   rows.forEach(
@@ -148,26 +147,12 @@ const displayController = (() => {
     );
   }
 
-  function updateScore() {
-    const oScore = document.getElementsByClassName("oScore")[0];
-    oScore.innerText = playerO.getScore();
-    const xScore = document.getElementsByClassName("xScore")[0];
-    xScore.innerText = playerX.getScore();
+  function updateScoreO(score) {
+    oScore.innerText = score;
   }
 
-  function checkWinner() {
-    if (gameBoard.getWinner() == "x") {
-      playerX.updateScore(playerX.getScore() + 1);
-      updateScore();
-      clearGrid();
-      gameBoard.resetBoard();
-    }
-    if (gameBoard.getWinner() == "o") {
-      playerO.updateScore(playerO.getScore() + 1);
-      updateScore();
-      clearGrid();
-      gameBoard.resetBoard();
-    }
+  function updateScoreX(score) {
+    xScore.innerText = score;
   }
 
   grid.forEach((row, rowIndex) =>
@@ -175,7 +160,7 @@ const displayController = (() => {
       cell.addEventListener("click", () => {
         gameBoard.placeMark(rowIndex, colIndex);
         updateGrid();
-        checkWinner();
+        gameController.checkWinner();
       })
     )
   );
@@ -184,6 +169,29 @@ const displayController = (() => {
   startButton.addEventListener("click", () => {
     gameBoard.resetBoard();
     clearGrid();
-    checkWinner();
   });
+
+  return { clearGrid, updateScoreO, updateScoreX };
+})();
+
+const gameController = (() => {
+  const playerO = Player("o");
+  const playerX = Player("x");
+
+  function checkWinner() {
+    if (gameBoard.getWinner() == "x") {
+      playerX.updateScore(playerX.getScore() + 1);
+      displayController.updateScoreX(playerX.getScore());
+      displayController.clearGrid();
+      gameBoard.resetBoard();
+    }
+    if (gameBoard.getWinner() == "o") {
+      playerO.updateScore(playerO.getScore() + 1);
+      displayController.updateScoreO(playerO.getScore());
+      displayController.clearGrid();
+      gameBoard.resetBoard();
+    }
+  }
+
+  return { checkWinner };
 })();
