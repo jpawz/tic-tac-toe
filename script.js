@@ -159,10 +159,14 @@ const displayController = (() => {
     if (gameBoard.getWinner() == "x") {
       playerX.updateScore(playerX.getScore() + 1);
       updateScore();
+      clearGrid();
+      gameBoard.resetBoard();
     }
     if (gameBoard.getWinner() == "o") {
       playerO.updateScore(playerO.getScore() + 1);
       updateScore();
+      clearGrid();
+      gameBoard.resetBoard();
     }
   }
 
