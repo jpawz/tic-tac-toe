@@ -102,8 +102,31 @@ const gameBoard = (() => {
   };
 })();
 
+const Player = (mark) => {
+  const playerMark = mark;
+  let score = 0;
+
+  const getMark = () => {
+    return playerMark;
+  };
+
+  const getScore = () => {
+    return score;
+  };
+
+  const updateScore = (newScore) => {
+    score = newScore;
+  };
+
+  return { getMark, getScore, updateScore };
+};
+
+const playerO = Player("o");
+const playerX = Player("x");
+
 const displayController = (() => {
   const grid = [[], [], []];
+
   const rows = [...document.getElementsByTagName("tr")];
   rows.forEach(
     (row, index) => (grid[index] = [...row.getElementsByTagName("td")])
@@ -125,17 +148,30 @@ const displayController = (() => {
     );
   }
 
+  function updateScore() {
+    const oScore = document.getElementsByClassName("oScore")[0];
+    oScore.innerText = playerO.getScore();
+    const xScore = document.getElementsByClassName("xScore")[0];
+    xScore.innerText = playerX.getScore();
+  }
+
+  function checkWinner() {
+    if (gameBoard.getWinner() == "x") {
+      playerX.updateScore(playerX.getScore() + 1);
+      updateScore();
+    }
+    if (gameBoard.getWinner() == "o") {
+      playerO.updateScore(playerO.getScore() + 1);
+      updateScore();
+    }
+  }
+
   grid.forEach((row, rowIndex) =>
     row.forEach((cell, colIndex) =>
       cell.addEventListener("click", () => {
         gameBoard.placeMark(rowIndex, colIndex);
         updateGrid();
-        if (gameBoard.getWinner() == "x") {
-          alert("X - win!");
-        }
-        if (gameBoard.getWinner() == "o") {
-          alert("O - win!");
-        }
+        checkWinner();
       })
     )
   );
@@ -144,5 +180,6 @@ const displayController = (() => {
   startButton.addEventListener("click", () => {
     gameBoard.resetBoard();
     clearGrid();
+    checkWinner();
   });
 })();
