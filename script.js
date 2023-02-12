@@ -12,8 +12,14 @@ const gameBoard = (() => {
   };
 
   const placeMark = (x, y) => {
-    board[x][y] = mark;
-    switchMark();
+    if (isEmpty(x, y)) {
+      board[x][y] = mark;
+      switchMark();
+    }
+  };
+
+  const isEmpty = (x, y) => {
+    return !board[x][y];
   };
 
   const switchMark = () => {
