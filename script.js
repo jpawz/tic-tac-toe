@@ -1,12 +1,27 @@
 const gameBoard = (() => {
-  const board = [[], [], []];
+  const board = [
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""],
+  ];
+
+  let mark = "o";
 
   const getBoard = () => {
     return board;
   };
 
-  const placeMark = (mark, x, y) => {
+  const placeMark = (x, y) => {
     board[x][y] = mark;
+    switchMark();
+  };
+
+  const switchMark = () => {
+    if (mark == "o") {
+      mark = "x";
+    } else {
+      mark = "o";
+    }
   };
 
   return {
@@ -15,14 +30,27 @@ const gameBoard = (() => {
   };
 })();
 
-const grid = [[], [], []];
-const rows = [...document.getElementsByTagName("tr")];
-rows.forEach(
-  (row, index) => (grid[index] = [...row.getElementsByTagName("td")])
-);
+const displayController = (() => {
+  const grid = [[], [], []];
+  const rows = [...document.getElementsByTagName("tr")];
+  rows.forEach(
+    (row, index) => (grid[index] = [...row.getElementsByTagName("td")])
+  );
 
-grid.forEach((row, rowIndex) =>
-  row.forEach((cell, colIndex) =>
-    cell.addEventListener("click", () => console.log(rowIndex, colIndex))
-  )
-);
+  function updateGrid() {
+    grid.forEach((row, rowIndex) =>
+      row.forEach((cell, colIndex) => {
+        cell.innerText = gameBoard.getBoard()[rowIndex][colIndex];
+      })
+    );
+  }
+
+  grid.forEach((row, rowIndex) =>
+    row.forEach((cell, colIndex) =>
+      cell.addEventListener("click", () => {
+        gameBoard.placeMark(rowIndex, colIndex);
+        updateGrid();
+      })
+    )
+  );
+})();
